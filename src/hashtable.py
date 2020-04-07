@@ -1,6 +1,7 @@
 # '''
 # Linked List hash table key/value pair
 # '''
+
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
@@ -77,7 +78,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        ndx = self._hash_mod(key)
+        node = self.storage[ndx]
+
+        while node:
+            if node.key == key:
+                return node.value
+            node = node.next
+
+        return None
 
 
     def resize(self):
@@ -87,8 +96,20 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity = self.capacity*2
 
+        os = []
+
+        for node in self.storage:
+            while node:
+                os.append((node.key, node.value))
+                node = node.next
+
+        self.storage = [None]*self.capacity
+
+        self.stored = 0
+        for pair in os:
+            self.insert(pair[0], pair[1])
 
 
 if __name__ == "__main__":
