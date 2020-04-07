@@ -55,8 +55,9 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        ndx = self._hash_mod(key)
 
+        self.storage[ndx] = (key, value)
 
 
     def remove(self, key):
@@ -67,7 +68,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        ndx = self._hash_mod(key)
+        item = self.storage[ndx]
+        try:
+            if item[0] == key:
+                self.storage[ndx] = None
+        except:
+            print(f"Key {key} not found!")
 
 
     def retrieve(self, key):
@@ -79,14 +86,12 @@ class HashTable:
         Fill this in.
         '''
         ndx = self._hash_mod(key)
-        node = self.storage[ndx]
+        item = self.storage[ndx]
 
-        while node:
-            if node.key == key:
-                return node.value
-            node = node.next
-
-        return None
+        if item[0] == key:
+            return item[1]
+        else:
+            return None
 
 
     def resize(self):
@@ -96,20 +101,16 @@ class HashTable:
 
         Fill this in.
         '''
-        self.capacity = self.capacity*2
+        self.capacity *= 2
 
-        os = []
+        old_s = self.storage.copy()
+        self.storage = [None] * self.capacity
 
-        for node in self.storage:
-            while node:
-                os.append((node.key, node.value))
-                node = node.next
-
-        self.storage = [None]*self.capacity
-
-        self.stored = 0
-        for pair in os:
-            self.insert(pair[0], pair[1])
+        try:
+            for item in old_s:
+                self.insert(item[0], item[1])
+        except:
+            pass
 
 
 if __name__ == "__main__":
@@ -119,7 +120,7 @@ if __name__ == "__main__":
     ht.insert("line_2", "Filled beyond capacity")
     ht.insert("line_3", "Linked list saves the day!")
 
-    print("")
+    print("____")
 
     # Test storing beyond capacity
     print(ht.retrieve("line_1"))
